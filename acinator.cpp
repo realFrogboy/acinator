@@ -1,5 +1,7 @@
 #include "Btree.h"
 
+int DEBUG_LEVEL = 3; //for stack
+
 int main() {
     BNode_t aNodes[NUM_OF_NODES] = {}; 
 
@@ -15,6 +17,9 @@ int main() {
 
     if (mode == 1) {
         treeWalk(&aNodes[0]);
+    }
+    else if (mode == 2) {
+        defin(aNodes);
     }
 
     w_tree(&aNodes[0]);

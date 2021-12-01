@@ -280,3 +280,104 @@ int connect_nodes(BNode_t *node, FILE *output) {
 
     return 0;
 }
+
+
+//-----------------------------------------------------------------------------
+
+
+int defin(BNode_t *aNodes) {
+    ASSERT(aNodes == NULL, "Void ptr");
+
+    printf("Enter the object\n");
+
+    char obj[MAX_LENGTH] = {};
+    scanf("%s", obj);
+
+    struct chrct chr = {};
+    chrctCtor(&chr);
+
+    cmp_node(&aNodes[0], obj, &chr);
+
+    print_def(aNodes, &chr, obj);
+
+    chrctDtor(&chr);
+
+    return 0;
+}
+
+int cmp_node(BNode_t *node, const char *str, chrct *chr) {
+    ASSERT(node == NULL, "Void ptr");
+    ASSERT(str == NULL, "Void ptr");
+
+    static int num = 0;
+    int num_curr = num;
+
+    if (strncmp(node->data, str, strlen(str)) == 0) 
+        return 2;
+
+    if ((node->left == NULL) && (node->right == NULL)) 
+        return 0;
+
+    stackPush(&chr->stk_p, num_curr);
+    num++;
+
+    int tmp = cmp_node(node->left, str, chr);
+    if (tmp == 2) return 2;
+
+    stackPop(&chr->stk_p);
+
+    stackPush(&chr->stk_n, num_curr);
+    num++;
+
+    tmp = cmp_node(node->right, str, chr);
+    if (tmp == 2) return 2;
+
+    stackPop(&chr->stk_n);
+
+    return 0;
+}
+
+int print_def(BNode_t *arr, chrct *chr, const char *str) {
+    ASSERT(arr == NULL, "Void ptr");
+    ASSERT(chr == NULL, "Void ptr");
+
+    printf("%s - ", str);
+
+    int size_stk = chr->stk_p.Size;
+    for (int num = 0; num < size_stk; num++) {
+        int idx =(int)chr->stk_p.data[chr->stk_p.Size - 1];
+        printf("%s ", arr[idx].data);
+        stackPop(&chr->stk_p);
+    }
+
+    printf("\n and NOT - ");
+
+    size_stk = chr->stk_n.Size;
+    for (int num = 0; num < size_stk; num++) {
+        int idx =(int)chr->stk_n.data[chr->stk_n.Size - 1];
+        printf("%s ", arr[idx].data);
+        stackPop(&chr->stk_n);
+    }
+
+    printf("\n");
+
+    return 0;
+}
+
+int chrctCtor(chrct *strc) {
+    ASSERT(strc == NULL, "Void ptr");
+
+    stackCtor(&strc->stk_p);
+    stackCtor(&strc->stk_n);
+
+    return 0;
+}
+
+int chrctDtor(chrct *strc) {
+    ASSERT(strc == NULL, "Void ptr");
+
+    stackDtor(&strc->stk_p);
+    stackDtor(&strc->stk_n);
+
+    return 0;
+}

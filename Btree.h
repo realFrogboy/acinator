@@ -6,6 +6,7 @@
 #include <string.h>
 #include <assert.h>
 #include "oneggin.h"
+#include "stack.h"
 
 const int NUM_OF_NODES = 10;
 const int MAX_LENGTH = 100;
@@ -33,6 +34,11 @@ struct BNode_t {
     char data[MAX_LENGTH];
 };
 
+struct chrct {
+    Stack stk_p;
+    Stack stk_n;
+};
+
 int get_mode();
 char get_answer();
 int get_str(char *str);
@@ -51,6 +57,12 @@ int connect_nodes(BNode_t *node, FILE *output);
 int treeWalk(BNode_t *node);
 int give_answer(BNode_t *node);
 int process_wrong_answer(BNode_t *node);
+
+int defin(BNode_t *aNodes);
+int cmp_node(BNode_t *node, const char *str, chrct *chr);
+int print_def(BNode_t *arr, chrct *chr, const char *str);
+int chrctCtor(chrct *strc);
+int chrctDtor(chrct *strc);
 
 int get_str(char *str);
 
