@@ -298,7 +298,7 @@ int defin(BNode_t *aNodes) {
 
     cmp_node(&aNodes[0], obj, &chr);
 
-    print_def(aNodes, &chr, obj);
+    print_def(aNodes, &chr);
 
     chrctDtor(&chr);
 
@@ -312,8 +312,10 @@ int cmp_node(BNode_t *node, const char *str, chrct *chr) {
     static int num = 0;
     int num_curr = num;
 
-    if (strncmp(node->data, str, strlen(str)) == 0) 
+    if (strncmp(node->data, str, strlen(str)) == 0){
+        num = 0; 
         return 2;
+    }
 
     if ((node->left == NULL) && (node->right == NULL)) 
         return 0;
@@ -337,11 +339,9 @@ int cmp_node(BNode_t *node, const char *str, chrct *chr) {
     return 0;
 }
 
-int print_def(BNode_t *arr, chrct *chr, const char *str) {
+int print_def(BNode_t *arr, chrct *chr) {
     ASSERT(arr == NULL, "Void ptr");
     ASSERT(chr == NULL, "Void ptr");
-
-    printf("%s - ", str);
 
     int size_stk = chr->stk_p.Size;
     for (int num = 0; num < size_stk; num++) {
@@ -378,6 +378,31 @@ int chrctDtor(chrct *strc) {
 
     stackDtor(&strc->stk_p);
     stackDtor(&strc->stk_n);
+
+    return 0;
+}
+
+
+//-----------------------------------------------------------------------------
+
+
+int print_sim(Stack stk_f, Stack stk_s, BNode_t *aNodes) {
+    ASSERT(aNodes == NULL, "Void ptr");
+
+    prinStack(&stk_f);
+    prinStack(&stk_s);
+
+    for (int num = 0; num < stk_f.Size; num++) {
+        int idx_f =(int)stk_f.data[stk_f.Size - 1];
+        for (int cnt = 0; cnt < stk_s.Size; cnt++) {
+            int idx_s =(int)stk_s.data[stk_s.Size - 1];
+            if (idx_f == idx_s){
+                printf("%s ", aNodes[idx_f].data);
+                stackPop(&stk_f);
+                stackPop(&stk_s);
+            }
+        }
+    }
 
     return 0;
 }

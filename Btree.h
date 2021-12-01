@@ -60,9 +60,11 @@ int process_wrong_answer(BNode_t *node);
 
 int defin(BNode_t *aNodes);
 int cmp_node(BNode_t *node, const char *str, chrct *chr);
-int print_def(BNode_t *arr, chrct *chr, const char *str);
+int print_def(BNode_t *arr, chrct *chr);
 int chrctCtor(chrct *strc);
 int chrctDtor(chrct *strc);
+
+int print_sim(Stack stk_f, Stack stk_s, BNode_t *aNodes);
 
 int get_str(char *str);
 
