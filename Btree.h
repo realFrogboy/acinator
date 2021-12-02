@@ -7,6 +7,7 @@
 #include <assert.h>
 #include "oneggin.h"
 #include "stack.h"
+#include "list.h"
 
 const int NUM_OF_NODES = 10;
 const int MAX_LENGTH = 100;
@@ -64,7 +65,10 @@ int print_def(BNode_t *arr, chrct *chr);
 int chrctCtor(chrct *strc);
 int chrctDtor(chrct *strc);
 
-int print_sim(Stack stk_f, Stack stk_s, BNode_t *aNodes);
+int cmp_obj(BNode_t *aNodes);
+int print_sim(Stack *stk_f, Stack *stk_s, BNode_t *aNodes);
+int list_w(Stack *stk, List *list);
+int list_r(Stack *stk, List *list);
 
 int get_str(char *str);
 

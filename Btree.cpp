@@ -234,7 +234,7 @@ int process_wrong_answer(BNode_t *node) {
 int make_tree_graph(BNode_t *arr, int nNodes) {
     ASSERT(arr == NULL, "Void ptr");
     
-    FILE *output = fopen("GRAPH.dot", "wb");
+    FILE *output = fopen("GRAPH_tree.dot", "wb");
     ASSERT(output == NULL, "Void ptr");
 
     fprintf(output, "digraph tree {\n");
@@ -386,23 +386,97 @@ int chrctDtor(chrct *strc) {
 //-----------------------------------------------------------------------------
 
 
-int print_sim(Stack stk_f, Stack stk_s, BNode_t *aNodes) {
+int cmp_obj(BNode_t *aNodes) {
     ASSERT(aNodes == NULL, "Void ptr");
 
-    prinStack(&stk_f);
-    prinStack(&stk_s);
+    printf("Enter two objects:");
 
-    for (int num = 0; num < stk_f.Size; num++) {
-        int idx_f =(int)stk_f.data[stk_f.Size - 1];
-        for (int cnt = 0; cnt < stk_s.Size; cnt++) {
-            int idx_s =(int)stk_s.data[stk_s.Size - 1];
-            if (idx_f == idx_s){
-                printf("%s ", aNodes[idx_f].data);
-                stackPop(&stk_f);
-                stackPop(&stk_s);
-            }
-        }
+    char obj_f[MAX_LENGTH] = {};
+    char obj_s[MAX_LENGTH] = {};
+
+    scanf("%s %s", obj_f, obj_s);
+
+    struct chrct chr_f = {};
+    chrctCtor(&chr_f);
+    struct chrct chr_s = {};
+    chrctCtor(&chr_s);
+
+    cmp_node(&aNodes[0], obj_f, &chr_f);
+    cmp_node(&aNodes[0], obj_s, &chr_s);
+
+    printf("%s looks like a %s because ", obj_f, obj_s);
+
+    print_sim(&chr_f.stk_p, &chr_s.stk_p, aNodes);
+    printf("\n");
+
+    printf("and NOT ");
+
+    print_sim(&chr_f.stk_n, &chr_s.stk_n, aNodes);
+    printf("\n");
+
+    printf(" but %s is ", obj_f);
+    print_def(aNodes, &chr_f);
+
+    printf("%s is ", obj_s);
+    print_def(aNodes, &chr_s);
+
+    chrctDtor(&chr_f);
+    chrctDtor(&chr_s);
+    return 0;
+}
+
+
+int print_sim(Stack *stk_f, Stack *stk_s, BNode_t *aNodes) {
+    ASSERT(aNodes == NULL, "Void ptr");
+
+    List list_f = list_ctor();
+    List list_s = list_ctor();
+
+    list_w(stk_f, &list_f);
+    list_w(stk_s, &list_s);
+
+    int tail_f = list_f.tail;
+    int tail_s = list_s.tail;
+
+    for (int num = 1; num <= tail_f; num++)
+        for (int idx = 1; idx <= tail_s; idx++) 
+            if ((list_s.arr[idx].next != -1) && (list_f.arr[num].next != -1))
+                if (isequal(list_f.arr[num].data, list_s.arr[idx].data) == 1) {
+                    printf("%s ", aNodes[(int)list_f.arr[num].data].data);
+                    del_elem(&list_f, num);
+                    del_elem(&list_s, idx);
+                }
+
+    list_r(stk_f, &list_f);
+    list_r(stk_s, &list_s);
+
+    list_dtor(&list_f);
+    list_dtor(&list_s);
+
+    return 0;
+}
+
+int list_w(Stack *stk, List *list) {
+    ASSERT(stk == NULL, "Void ptr");
+    ASSERT(list == NULL, "Void ptr");
+
+    int Size = stk->Size;
+    for (int num = 0; num < Size; num++) {
+        int idx =(int)stk->data[stk->Size - 1];
+        ins_at_the_end(list, idx);
+        stackPop(stk);
     }
 
+    return 0;
+}
+
+int list_r(Stack *stk, List *list) {
+    ASSERT(stk == NULL, "Void ptr");
+    ASSERT(list == NULL, "Void ptr");
+
+    for (unsigned num = 1; num <= list->tail; num++)
+        if (list->arr[num].next != -1)
+            stackPush(stk, list->arr[num].data);
+    
     return 0;
 }
