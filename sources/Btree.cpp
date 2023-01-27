@@ -67,6 +67,7 @@ int r_tree(BNode_t *arr) {
     scanFile(nSmbl, astr, str); 
 
     int nNodes = r_node(arr, astr);
+    nNodes++;
 
     free(str);
     free(astr);
@@ -99,7 +100,7 @@ int r_node(BNode_t *arr, line *arr_line) {
 
     else {
         int num_curr = num;
-        strncpy (arr[num].data, arr_line[line_num].refonBegin, arr_line[line_num].lenStr);
+        strncpy(arr[num].data, arr_line[line_num].refonBegin, arr_line[line_num].lenStr);
 
         arr[num_curr].left = &arr[++num];
         line_num++;
@@ -230,7 +231,7 @@ int process_wrong_answer(BNode_t *node) {
 
 //-----------------------------------------------------------------------------
 
-//, style = \"filled\", fillcolor = \"lightgreen\", 
+
 int make_tree_graph(BNode_t *arr, int nNodes) {
     ASSERT(arr == NULL, "Void ptr");
     
@@ -241,7 +242,7 @@ int make_tree_graph(BNode_t *arr, int nNodes) {
 
     for (int num = 0; num < nNodes; num++) {
         if ((arr[num].left == NULL) && (arr[num].right == NULL)) 
-            fprintf(output, "\tnode%d [shape = \"record\", label = \"{<d>%s|{NULL|NULL}}\"];\n", num, arr[num].data);
+            fprintf(output, "\tnode%d [shape = \"record\", style = \"filled\", fillcolor = \"greenyellow\", label = \"{<d>%s|{NULL|NULL}}\"];\n", num, arr[num].data);
 
         else 
             fprintf(output, "\tnode%d [shape = \"record\", style = \"filled\", fillcolor = \"lightgoldenrod2\", label = \"{<d>%s|{<l>LEFT|<r>RIGHT}}\"];\n", 
@@ -343,23 +344,27 @@ int print_def(BNode_t *arr, chrct *chr) {
     ASSERT(arr == NULL, "Void ptr");
     ASSERT(chr == NULL, "Void ptr");
 
-    int size_stk = chr->stk_p.Size;
-    for (int num = 0; num < size_stk; num++) {
-        int idx =(int)chr->stk_p.data[chr->stk_p.Size - 1];
-        printf("%s ", arr[idx].data);
-        stackPop(&chr->stk_p);
-    }
+    print_stats(arr, &chr->stk_p);
 
     printf("\n and NOT - ");
 
-    size_stk = chr->stk_n.Size;
-    for (int num = 0; num < size_stk; num++) {
-        int idx =(int)chr->stk_n.data[chr->stk_n.Size - 1];
-        printf("%s ", arr[idx].data);
-        stackPop(&chr->stk_n);
-    }
+    print_stats(arr, &chr->stk_n);
 
     printf("\n");
+
+    return 0;
+}
+
+int print_stats(BNode_t *arr, Stack *stk) {
+    ASSERT(arr == NULL, "Void ptr");
+    ASSERT(stk == NULL, "Void ptr");
+
+    int size_stk = stk->Size;
+    for (int num = 0; num < size_stk; num++) {
+        int idx =(int)stk->data[stk->Size - 1];
+        printf("%s, ", arr[idx].data);
+        stackPop(stk);
+    }
 
     return 0;
 }
@@ -438,14 +443,22 @@ int print_sim(Stack *stk_f, Stack *stk_s, BNode_t *aNodes) {
     int tail_f = list_f.tail;
     int tail_s = list_s.tail;
 
-    for (int num = 1; num <= tail_f; num++)
-        for (int idx = 1; idx <= tail_s; idx++) 
-            if ((list_s.arr[idx].next != -1) && (list_f.arr[num].next != -1))
-                if (isequal(list_f.arr[num].data, list_s.arr[idx].data) == 1) {
-                    printf("%s ", aNodes[(int)list_f.arr[num].data].data);
-                    del_elem(&list_f, num);
-                    del_elem(&list_s, idx);
-                }
+    for (int num = 1; num <= tail_f; num++) {
+
+        for (int idx = 1; idx <= tail_s; idx++) {
+
+            if ((list_s.arr[idx].next != -1) && (list_f.arr[num].next != -1) &&
+                 isequal(list_f.arr[num].data, list_s.arr[idx].data) == 1) {
+
+                printf("%s ", aNodes[(int)list_f.arr[num].data].data);
+                del_elem(&list_f, num);
+                del_elem(&list_s, idx);
+                
+            }
+
+        }
+
+    }
 
     list_r(stk_f, &list_f);
     list_r(stk_s, &list_s);

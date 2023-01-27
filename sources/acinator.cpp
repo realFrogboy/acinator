@@ -6,9 +6,9 @@ int main() {
     BNode_t aNodes[NUM_OF_NODES] = {}; 
 
     int nNodes = r_tree(aNodes);
-    nNodes++;
 
     make_tree_graph(aNodes, nNodes);
+    system("dot -Tpng GRAPH_tree.dot -o image1.png");
 
     int mode = get_mode();
 

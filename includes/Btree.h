@@ -9,7 +9,7 @@
 #include "stack.h"
 #include "list.h"
 
-const int NUM_OF_NODES = 10;
+const int NUM_OF_NODES = 1000;
 const int MAX_LENGTH = 100;
 
 #ifndef ASSERT
@@ -62,6 +62,7 @@ int process_wrong_answer(BNode_t *node);
 int defin(BNode_t *aNodes);
 int cmp_node(BNode_t *node, const char *str, chrct *chr);
 int print_def(BNode_t *arr, chrct *chr);
+int print_stats(BNode_t *arr, Stack *stk);
 int chrctCtor(chrct *strc);
 int chrctDtor(chrct *strc);
 
